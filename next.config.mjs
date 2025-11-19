@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://api.example.com/:path*',
+        destination: 'https://trading-view-gilt.vercel.app/:path*',
       },
     ];
   },
