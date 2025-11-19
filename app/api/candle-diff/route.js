@@ -1,5 +1,5 @@
 // app/api/candles/route.ts
-import { convertToTon, getCandlesSafe } from '@/shared/lib/tradingview';
+import { calculateCandlesDiff, convertToTon, getCandlesSafe } from '@/shared/lib/tradingview';
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
@@ -7,8 +7,8 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
 
     const code = searchParams.get('code');
-    const timeframe = searchParams.get('timeframe') || '1D';
-    const amount = +searchParams.get('amount') || 6;
+    const timeframe = '1D';
+    const amount = 6;
 
     const candles = await getCandlesSafe({ code, timeframe, amount });
 
@@ -17,11 +17,9 @@ export async function GET(request) {
     return NextResponse.json({
       code: code,
       futures: futures,
+      ...calculateCandlesDiff(futures),
     });
   } catch (error) {
-    console.log('Error fetching candles:', error, error.response);
-    console.dir(error);
-
     console.error(error);
     return NextResponse.json({ errorMessage: 'Failed to fetch candles', error }, { status: 500 });
   }
